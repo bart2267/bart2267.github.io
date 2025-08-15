@@ -1,0 +1,163 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Hadiah untuk Hanuun</title>
+<style>
+  :root{
+    --bg: #ffeef4;
+    --card: #fff6f9;
+    --accent: #ffb6c1;
+    --muted: #a86c82;
+}
+  body{
+    margin:0;
+    font-family: system-ui, sans-serif;
+    background: linear-gradient(180deg, #ffeef4 0%, #ffd6e1 100%);
+    color:#5a3e4d;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    min-height:100vh;
+    padding:20px;
+    flex-direction: column;
+  }
+  .wrap{
+    max-width:900px;
+    background: rgba(255,255,255,0.1);
+    border-radius:20px;
+    padding:22px;
+    box-shadow: 0 8px 30px rgba(2,6,23,0.3);
+  }
+  .avatar{
+    width:88px;height:88px;border-radius:18px;background:linear-gradient(135deg,var(--accent),#ff9aa2);
+    display:flex;align-items:center;justify-content:center;font-weight:700;font-size:26px;
+  }
+  .message{
+    margin-top:12px;padding:12px;border-radius:16px;background:rgba(255,255,255,0.2);
+    min-height:120px;overflow:hidden;
+  }
+  .message.revealed .hidden{filter:none; animation: typewriter 3s steps(60, end) forwards; white-space: pre-wrap; overflow:hidden; display:inline-block;}
+  .hidden{filter:blur(6px); transition: filter 0.5s; width:100%;}
+  @keyframes typewriter{from{width:0;}to{width:100%;}}
+  .confetti,.falling-hearts{position:fixed;left:0;right:0;top:0;pointer-events:none;z-index:30;height:0}
+  #gameOverlay {position: fixed;top: 0;left: 0;right: 0;bottom: 0; background: linear-gradient(180deg, #ffeef4 0%, #ffd6e1 100%); z-index: 1000;display: flex;flex-direction: column;align-items: center;justify-content: center;font-family: 'Comic Sans MS', cursive;}
+  #gameOverlay.hidden { display: none !important; }
+  #heartContainer {position: relative;width: 100%;height: 60%;overflow: hidden;}
+  .heart {position: absolute;font-size: 32px;cursor: pointer;transition: transform 0.4s, opacity 0.4s;}
+  .heart.clicked {transform: scale(2) rotate(360deg);opacity:0;}
+  footer {margin-top: 20px; font-size: 14px; color: var(--muted);}
+</style>
+</head>
+<body>
+<div id="gameOverlay">
+  <div id="gameInstructions">Klik 5 hati yang muncul untuk membuka hadiah 🎁</div>
+  <div id="heartContainer"></div>
+  <div id="progress">0 / 5</div>
+</div>
+<div class="wrap">
+  <header>
+    <div class="avatar">💌</div>
+    <h1>Untuk: <span id="recipientName">Augustania Raihaanah Hanuun Nasywa</span></h1>
+  </header>
+  <div class="message" id="messageBox">
+    <div class="hidden" id="hiddenMessage">
+      <h3>Khusus buat kamu, dek hanuun ❤️</h3>
+      <p>barakallahu fii umrik dek hanuun, selamat 17 tahun, selamat hari dek hanuun seduniaaaa. Semoga dek hanuun menjadi pribadi yang lebih baik kedepannya, terlebih berbakti kepada kedua orang tua hanuunn, sayang sama panji jugaa. Semoga semua urusan dek hanuun diberi kelancaran, semua mimpi-mimpi dek hanuun bisa tercapai di kemudian hari, aamiin. Semoga dek hanuun selalu bersama orang-orang baik dan hal-hal baik juga selalu bersama dek hanuun. Terimakasih udah bertahan sampai sejauh ini, semua rintangan dek hanuun berhasil lewatin. Dek hanuun hebat, mas selalu bangga sama dek hanuun, dari semua pilihan yang dek hanuun lewatin mas bakal selalu support dek hanuun okaayy, selama itu baik untuk hanuun. Aku selalu berdoa kamu baik-baik teruss, sehat, bahagia jugaa. Selamat bertambah usia dek hanuun hebat.</p>
+      <p>— <em>Akbar Nugroho</em></p>
+    </div>
+  </div>
+</div>
+<div class="confetti" id="confetti"></div>
+<div class="falling-hearts" id="fallingHearts"></div>
+<audio id="bgAudio" src="https://www.bensound.com/bensound-music/bensound-romantic.mp3" preload="auto"></audio>
+<footer>© Akbar Nugroho</footer>
+<script>
+function launchConfetti(){
+  const container=document.getElementById('confetti');
+  container.innerHTML='';
+  const colors=['#ff6b81','#ffd166','#6be7ff','#a78bfa','#ff9aa2','#ffb86b'];
+  for(let i=0;i<100;i++){
+    const el=document.createElement('div');
+    el.style.position='absolute';
+    el.style.left=(Math.random()*100)+'%';
+    el.style.top='-10px';
+    el.style.width=(6+Math.random()*10)+'px';
+    el.style.height=(8+Math.random()*14)+'px';
+    el.style.background=colors[Math.floor(Math.random()*colors.length)];
+    el.style.opacity=0.95;
+    el.style.transform='rotate('+(Math.random()*360)+'deg)';
+    el.style.borderRadius='2px';
+    el.style.pointerEvents='none';
+    el.style.transition='transform 3s linear, top 3s linear, left 3s linear, opacity 2.5s linear';
+    container.appendChild(el);
+    requestAnimationFrame(()=>{
+      el.style.top=(60+Math.random()*80)+'vh';
+      el.style.left=(Math.random()*100)+'%';
+      el.style.transform='rotate('+(Math.random()*720)+'deg)';
+      el.style.opacity=0.85;
+    });
+    setTimeout(()=>el.remove(),3800);
+  }
+}
+function launchFallingHearts(){
+  const container=document.getElementById('fallingHearts');
+  container.innerHTML='';
+  for(let i=0;i<30;i++){
+    const heart=document.createElement('div');
+    heart.textContent='💖';
+    heart.style.position='absolute';
+    heart.style.left=(Math.random()*100)+'%';
+    heart.style.top='-10px';
+    heart.style.fontSize=(16+Math.random()*24)+'px';
+    heart.style.opacity=0.9;
+    heart.style.transition='top 4s linear, opacity 4s linear';
+    container.appendChild(heart);
+    requestAnimationFrame(()=>{
+      heart.style.top='100vh';
+      heart.style.opacity=0;
+    });
+    setTimeout(()=>heart.remove(),4000);
+  }
+}
+const gameOverlay=document.getElementById('gameOverlay');
+const heartContainer=document.getElementById('heartContainer');
+const progressDisplay=document.getElementById('progress');
+let heartsClicked=0;let heartInterval;
+function spawnHeart(){
+  const heart=document.createElement('div');
+  heart.classList.add('heart');
+  heart.textContent='💖';
+  heart.style.top=Math.random()*80+'%';
+  heart.style.left=Math.random()*90+'%';
+  heart.addEventListener('click',()=>{
+    heartsClicked++;
+    heart.classList.add('clicked');
+    progressDisplay.textContent=heartsClicked+' / 5';
+    setTimeout(()=>heart.remove(),300);
+    if(heartsClicked>=5){
+      clearInterval(heartInterval);
+      setTimeout(()=>{
+        gameOverlay.classList.add('hidden');
+        gameOverlay.style.display='none';
+        const msgBox=document.getElementById('messageBox');
+        msgBox.classList.add('revealed');
+        document.getElementById('bgAudio').play().catch(()=>{});
+        launchConfetti();
+        launchFallingHearts();
+      },300);
+    }
+  });
+  heartContainer.appendChild(heart);
+  setTimeout(()=>heart.remove(),2000);
+}
+function startGame(){
+  heartsClicked=0;
+  progressDisplay.textContent='0 / 5';
+  heartInterval=setInterval(spawnHeart,800);
+}
+window.addEventListener('load',startGame);
+</script>
+</body>
+</html>
